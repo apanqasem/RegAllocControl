@@ -8,6 +8,7 @@
 
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/LICM.h"
+#include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/GlobalDCE.h"
 
 using namespace llvm;
@@ -42,7 +43,16 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 					legacy::PassManagerBase &PM) {
   PM.add(new RegAllocControlPass());
   if (AggressionLevel > 0) 
-    PM.add(createLICMPass());
+  {
+	//Scalar passes 
+	PM.add(createLICMPass());
+	PM.add(createAggressiveDCEPass());
+	PM.add(createAlignmentFromAssumptionsPass());
+	PM.add(createBitTrackingDCEPAss());
+	PM.add(createConstantHoistingPass()); 
+	//IPO passes
+	//PM.add(createGlobalDCEPass());
+  }
 }
 
 
