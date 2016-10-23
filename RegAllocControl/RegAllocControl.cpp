@@ -17,6 +17,11 @@
 #include "llvm/Transforms/Scalar/DCE.h"
 #include "llvm/Transforms/Scalar/DeadStoreElimination.h"
 #include "llvm/Transforms/Scalar/EarlyCSE.h"
+//#include "llvm/Transforms/Scalar/FlattenCFG.h"
+#include "llvm/Transforms/Scalar/Float2Int.h"
+#include "llvm/Transforms/Scalar/GuardWidening.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+//#include "llvm/Transforms/Scalar/GVNHoist.h"
 
 
 #include "llvm/Transforms/IPO.h"
@@ -66,6 +71,11 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createDeadCodeEliminationPass());
 	PM.add(createDeadStoreEliminationPass());
 	PM.add(createEarlyCSEPass());
+	PM.add(createFlattenCFGPass());
+	PM.add(createFloat2IntPass());
+	PM.add(createGuardWideningPass());
+	PM.add(createGVNPass());
+	PM.add(createGVNHoistPass());
 	//IPO passes
 	//PM.add(createGlobalDCEPass());
   }
