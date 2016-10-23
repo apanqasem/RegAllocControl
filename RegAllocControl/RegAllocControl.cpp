@@ -67,7 +67,6 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
   if (AggressionLevel > 0) 
   {
 	//Scalar passes 
-	PM.add(createLICMPass());
 	PM.add(createAggressiveDCEPass());
 	PM.add(createAlignmentFromAssumptionsPass());
 	PM.add(createBitTrackingDCEPass());
@@ -80,8 +79,6 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createFlattenCFGPass());
 	PM.add(createFloat2IntPass());
 	PM.add(createGuardWideningPass());
-	PM.add(createGVNPass());
-	PM.add(createGVNHoistPass());
 	PM.add(createInductiveRangeCheckEliminationPass());
 	PM.add(createIndVarSimplifyPass());
 	PM.add(createJumpThreadingPass());
@@ -89,6 +86,11 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLoopDataPrefetchPass());	
 	//IPO passes
 	//PM.add(createGlobalDCEPass());
+  }
+  if (AggressionLevel > 1) {
+    PM.add(createLICMPass());
+    PM.add(createGVNPass());
+    PM.add(createGVNHoistPass());
   }
 }
 
