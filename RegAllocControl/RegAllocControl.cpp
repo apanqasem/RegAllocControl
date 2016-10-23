@@ -22,6 +22,12 @@
 #include "llvm/Transforms/Scalar/GuardWidening.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 //#include "llvm/Transforms/Scalar/GVNHoist.h"
+//#include "llvm/Transforms/Scalar/InductiveRangeCheckElimination.h"
+#include "llvm/Transforms/Scalar/IndVarSimplify.h"
+#include "llvm/Transforms/Scalar/JumpThreading.h"
+//#include "llvm/Transforms/Scalar/LoadCombine.h"
+#include "llvm/Transforms/Scalar/LoopDataPrefetch.h"
+
 
 
 #include "llvm/Transforms/IPO.h"
@@ -76,6 +82,11 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createGuardWideningPass());
 	PM.add(createGVNPass());
 	PM.add(createGVNHoistPass());
+	PM.add(createInductiveRangeCheckEliminationPass());
+	PM.add(createIndVarSimplifyPass());
+	PM.add(createJumpThreadingPass());
+	PM.add(createLoadCombinePass());
+	PM.add(createLoopDataPrefetchPass());	
 	//IPO passes
 	//PM.add(createGlobalDCEPass());
   }
