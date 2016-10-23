@@ -8,6 +8,17 @@
 
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/LICM.h"
+#include "llvm/Transforms/Scalar/ADCE.h"
+#include "llvm/Transforms/Scalar/BDCE.h"
+#include "llvm/Transforms/Scalar/AlignmentFromAssumptions.h"
+#include "llvm/Transforms/Scalar/ConstantHoisting.h"
+//#include "llvm/Transforms/Scalar/ConstantProp.h"
+#include "llvm/Transforms/Scalar/CorrelatedValuePropagation.h"
+#include "llvm/Transforms/Scalar/DCE.h"
+#include "llvm/Transforms/Scalar/DeadStoreElimination.h"
+#include "llvm/Transforms/Scalar/EarlyCSE.h"
+
+
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/GlobalDCE.h"
 
@@ -48,8 +59,13 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLICMPass());
 	PM.add(createAggressiveDCEPass());
 	PM.add(createAlignmentFromAssumptionsPass());
-	PM.add(createBitTrackingDCEPAss());
+	PM.add(createBitTrackingDCEPass());
 	PM.add(createConstantHoistingPass()); 
+	PM.add(createConstantPropagationPass());
+	PM.add(createCorrelatedValuePropagationPass());
+	PM.add(createDeadCodeEliminationPass());
+	PM.add(createDeadStoreEliminationPass());
+	PM.add(createEarlyCSEPass());
 	//IPO passes
 	//PM.add(createGlobalDCEPass());
   }
