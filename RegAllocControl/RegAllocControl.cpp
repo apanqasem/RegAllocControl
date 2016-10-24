@@ -42,6 +42,25 @@
 //#include "llvm/Transforms/Scalar/LoopVersioningLICM.h"
 #include "llvm/Transforms/Scalar/LowerAtomic.h"
 #include "llvm/Transforms/Scalar/LowerExpectIntrinsic.h"
+#include "llvm/Transforms/Scalar/LowerGuardIntrinsic.h"
+#include "llvm/Transforms/Scalar/MemCpyOptimizer.h"
+#include "llvm/Transforms/Scalar/MergedLoadStoreMotion.h"
+#include "llvm/Transforms/Scalar/NaryReassociate.h"
+#include "llvm/Transforms/Scalar/PartiallyInlineLibCalls.h"
+//#include "llvm/Transforms/Scalar/PlaceSafepoints.h"
+#include "llvm/Transforms/Scalar/Reassociate.h"
+//#include "llvm/Transforms/Scalar/Reg2Mem.h"
+//#include "llvm/Transforms/Scalar/RewriteStatepointsForGC.h"
+//#include "llvm/Transforms/Scalar/Scalarizer.h"
+#include "llvm/Transforms/Scalar/SCCP.h"
+//#include "llvm/Transforms/Scalar/SeparateConstOffsetFromGEP.h"
+#include "llvm/Transforms/Scalar/Sink.h"
+#include "llvm/Transforms/Scalar/SpeculativeExecution.h"
+#include "llvm/Transforms/Scalar/SROA.h"
+//#include "llvm/Transforms/Scalar/StraightLineStrengthReduce.h"
+//#include "llvm/Transforms/Scalar/StructurizeCFG.h"
+#include "llvm/Transforms/Scalar/TailRecursionElimination.h"
+
 
 
 
@@ -114,6 +133,26 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLoopVersioningLICMPass());
 	PM.add(createLowerAtomicPass());
 	PM.add(createLowerExpectIntrinsicPass());			
+	PM.add(createLowerGuardIntrinsicPass());
+	PM.add(createMemCpyOptPass());
+	PM.add(createMergedLoadStoreMotionPass());
+	PM.add(createNaryReassociatePass());
+	PM.add(createPartiallyInlineLibCallsPass());
+	//PM.add(createPlaceSafepointsPass());
+	PM.add(createReassociatePass());
+	PM.add(createDemoteRegisterToMemoryPass());
+	//PM.add(createRewriteStatepointsForGCPass());
+	PM.add(createScalarizerPass());
+	PM.add(createSCCPPass());
+	PM.add(createSeparateConstOffsetFromGEPPass(NULL,true));
+	//PM.add(createSimplificationPass(int, ste::func)); 			
+	PM.add(createSinkingPass());
+	PM.add(createSpeculativeExecutionPass());
+	PM.add(createSROAPass());
+	PM.add(createStraightLineStrengthReducePass());
+	PM.add(createStructurizeCFGPass(false));
+	PM.add(createTailCallEliminationPass());
+	
 	//IPO passes
 	//PM.add(createGlobalDCEPass());
   }
