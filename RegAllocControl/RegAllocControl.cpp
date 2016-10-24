@@ -27,6 +27,21 @@
 #include "llvm/Transforms/Scalar/JumpThreading.h"
 //#include "llvm/Transforms/Scalar/LoadCombine.h"
 #include "llvm/Transforms/Scalar/LoopDataPrefetch.h"
+#include "llvm/Transforms/Scalar/LoopDeletion.h"
+#include "llvm/Transforms/Scalar/LoopDistribute.h"
+#include "llvm/Transforms/Scalar/LoopIdiomRecognize.h"
+#include "llvm/Transforms/Scalar/LoopInstSimplify.h"
+//#include "llvm/Transforms/Scalar/LoopInterchange.h"
+//#include "llvm/Transforms/Scalar/LoopLoadElimination.h"
+//#include "llvm/Transforms/Scalar/LoopRerollPass.h"
+#include "llvm/Transforms/Scalar/LoopRotation.h"
+//#include "llvm/Transforms/Scalar/LoopSimplify.h"
+#include "llvm/Transforms/Scalar/LoopStrengthReduce.h"
+#include "llvm/Transforms/Scalar/LoopUnrollPass.h"
+//#include "llvm/Transforms/Scalar/LoopUnswitch.h"
+//#include "llvm/Transforms/Scalar/LoopVersioningLICM.h"
+#include "llvm/Transforms/Scalar/LowerAtomic.h"
+#include "llvm/Transforms/Scalar/LowerExpectIntrinsic.h"
 
 
 
@@ -87,6 +102,21 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createJumpThreadingPass());
 	PM.add(createLoadCombinePass());
 	PM.add(createLoopDataPrefetchPass());	
+	PM.add(createLoopDeletionPass());
+	PM.add(createLoopDistributePass(true));
+	PM.add(createLoopIdiomPass());
+	PM.add(createLoopInstSimplifyPass());
+	PM.add(createLoopInterchangePass());
+	PM.add(createLoopLoadEliminationPass());
+	PM.add(createLoopRerollPass());
+	PM.add(createLoopRotatePass(20));
+	PM.add(createLoopSimplifyCFGPass());
+	PM.add(createLoopStrengthReducePass());
+	PM.add(createSimpleLoopUnrollPass());
+	PM.add(createLoopUnswitchPass(true));
+	PM.add(createLoopVersioningLICMPass());
+	PM.add(createLowerAtomicPass());
+	PM.add(createLowerExpectIntrinsicPass());			
 	//IPO passes
 	//PM.add(createGlobalDCEPass());
   }
