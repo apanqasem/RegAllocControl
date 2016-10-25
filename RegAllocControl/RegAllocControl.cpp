@@ -12,34 +12,23 @@
 #include "llvm/Transforms/Scalar/BDCE.h"
 #include "llvm/Transforms/Scalar/AlignmentFromAssumptions.h"
 #include "llvm/Transforms/Scalar/ConstantHoisting.h"
-//#include "llvm/Transforms/Scalar/ConstantProp.h"
 #include "llvm/Transforms/Scalar/CorrelatedValuePropagation.h"
 #include "llvm/Transforms/Scalar/DCE.h"
 #include "llvm/Transforms/Scalar/DeadStoreElimination.h"
 #include "llvm/Transforms/Scalar/EarlyCSE.h"
-//#include "llvm/Transforms/Scalar/FlattenCFG.h"
 #include "llvm/Transforms/Scalar/Float2Int.h"
 #include "llvm/Transforms/Scalar/GuardWidening.h"
 #include "llvm/Transforms/Scalar/GVN.h"
-//#include "llvm/Transforms/Scalar/GVNHoist.h"
-//#include "llvm/Transforms/Scalar/InductiveRangeCheckElimination.h"
 #include "llvm/Transforms/Scalar/IndVarSimplify.h"
 #include "llvm/Transforms/Scalar/JumpThreading.h"
-//#include "llvm/Transforms/Scalar/LoadCombine.h"
 #include "llvm/Transforms/Scalar/LoopDataPrefetch.h"
 #include "llvm/Transforms/Scalar/LoopDeletion.h"
 #include "llvm/Transforms/Scalar/LoopDistribute.h"
 #include "llvm/Transforms/Scalar/LoopIdiomRecognize.h"
 #include "llvm/Transforms/Scalar/LoopInstSimplify.h"
-//#include "llvm/Transforms/Scalar/LoopInterchange.h"
-//#include "llvm/Transforms/Scalar/LoopLoadElimination.h"
-//#include "llvm/Transforms/Scalar/LoopRerollPass.h"
 #include "llvm/Transforms/Scalar/LoopRotation.h"
-//#include "llvm/Transforms/Scalar/LoopSimplify.h"
 #include "llvm/Transforms/Scalar/LoopStrengthReduce.h"
 #include "llvm/Transforms/Scalar/LoopUnrollPass.h"
-//#include "llvm/Transforms/Scalar/LoopUnswitch.h"
-//#include "llvm/Transforms/Scalar/LoopVersioningLICM.h"
 #include "llvm/Transforms/Scalar/LowerAtomic.h"
 #include "llvm/Transforms/Scalar/LowerExpectIntrinsic.h"
 #include "llvm/Transforms/Scalar/LowerGuardIntrinsic.h"
@@ -47,22 +36,28 @@
 #include "llvm/Transforms/Scalar/MergedLoadStoreMotion.h"
 #include "llvm/Transforms/Scalar/NaryReassociate.h"
 #include "llvm/Transforms/Scalar/PartiallyInlineLibCalls.h"
-//#include "llvm/Transforms/Scalar/PlaceSafepoints.h"
 #include "llvm/Transforms/Scalar/Reassociate.h"
-//#include "llvm/Transforms/Scalar/Reg2Mem.h"
-//#include "llvm/Transforms/Scalar/RewriteStatepointsForGC.h"
-//#include "llvm/Transforms/Scalar/Scalarizer.h"
 #include "llvm/Transforms/Scalar/SCCP.h"
-//#include "llvm/Transforms/Scalar/SeparateConstOffsetFromGEP.h"
 #include "llvm/Transforms/Scalar/Sink.h"
 #include "llvm/Transforms/Scalar/SpeculativeExecution.h"
 #include "llvm/Transforms/Scalar/SROA.h"
-//#include "llvm/Transforms/Scalar/StraightLineStrengthReduce.h"
-//#include "llvm/Transforms/Scalar/StructurizeCFG.h"
 #include "llvm/Transforms/Scalar/TailRecursionElimination.h"
 
-
-
+//#include "llvm/Transforms/Utils.h"
+#include "llvm/Transforms/Utils/AddDiscriminators.h"
+#include "llvm/Transforms/Utils/BreakCriticalEdges.h"
+//#include "llvm/Transforms/Utils/InstructionNamer.h"
+#include "llvm/Transforms/Utils/LCSSA.h"
+#include "llvm/Transforms/Utils/LoopSimplify.h"
+#include "llvm/Transforms/Utils/LoopVersioning.h"
+#include "llvm/Transforms/Utils/LowerInvoke.h"
+//#include "llvm/Transforms/Utils/LowerSwitch.h"
+#include "llvm/Transforms/Utils/Mem2Reg.h"
+//#include "llvm/Transforms/Utils/MetaRenamer.h"
+//#include "llvm/Transforms/Utils/NameAnonGlobals.h"
+#include "llvm/Transforms/Utils/SimplifyInstructions.h"
+#include "llvm/Transforms/Utils/SymbolRewriter.h"
+#include "llvm/Transforms/Utils/UnifyFunctionExitNodes.h"
 
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/GlobalDCE.h"
@@ -152,8 +147,25 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createStraightLineStrengthReducePass());
 	PM.add(createStructurizeCFGPass(false));
 	PM.add(createTailCallEliminationPass());
-	
+
+	//Utils Passes
+	PM.add(createAddDiscriminatorsPass());
+	PM.add(createBreakCriticalEdgesPass());	
+	PM.add(createInstructionNamerPass());
+	PM.add(createLCSSAPass());
+	PM.add(createLoopSimplifyPass());
+	PM.add(createLoopVersioningPass());
+	PM.add(createLowerInvokePass());
+	PM.add(createLowerSwitchPass());
+	PM.add(createPromoteMemoryToRegisterPass());
+	//PM.add(createMetaRenamerPass());
+	//PM.add(createNameAnonGlobalPass());
+	PM.add(createInstructionSimplifierPass());
+	PM.add(createRewriteSymbolsPass());
+	PM.add(createUnifyFunctionExitNodesPass());
 	//IPO passes
+
+
 	//PM.add(createGlobalDCEPass());
   }
   if (AggressionLevel > 1) {
