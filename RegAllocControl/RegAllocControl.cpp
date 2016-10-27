@@ -43,24 +43,31 @@
 #include "llvm/Transforms/Scalar/SROA.h"
 #include "llvm/Transforms/Scalar/TailRecursionElimination.h"
 
-//#include "llvm/Transforms/Utils.h"
 #include "llvm/Transforms/Utils/AddDiscriminators.h"
 #include "llvm/Transforms/Utils/BreakCriticalEdges.h"
-//#include "llvm/Transforms/Utils/InstructionNamer.h"
 #include "llvm/Transforms/Utils/LCSSA.h"
 #include "llvm/Transforms/Utils/LoopSimplify.h"
 #include "llvm/Transforms/Utils/LoopVersioning.h"
 #include "llvm/Transforms/Utils/LowerInvoke.h"
-//#include "llvm/Transforms/Utils/LowerSwitch.h"
 #include "llvm/Transforms/Utils/Mem2Reg.h"
-//#include "llvm/Transforms/Utils/MetaRenamer.h"
-//#include "llvm/Transforms/Utils/NameAnonGlobals.h"
 #include "llvm/Transforms/Utils/SimplifyInstructions.h"
 #include "llvm/Transforms/Utils/SymbolRewriter.h"
 #include "llvm/Transforms/Utils/UnifyFunctionExitNodes.h"
 
+#include "llvm/Transforms/Vectorize.h"
+#include "llvm/Transforms/Vectorize/SLPVectorizer.h"
+
+#include "llvm/Transforms/ObjCARC.h"
+
 #include "llvm/Transforms/IPO.h"
+#include "llvm/Transforms/IPO/AlwaysInliner.h"
+#include "llvm/Transforms/IPO/ConstantMerge.h"
+#include "llvm/Transforms/IPO/CrossDSOCFI.h"
 #include "llvm/Transforms/IPO/GlobalDCE.h"
+
+#include "llvm/Transforms/Instrumentation.h"
+
+#include "llvm/Transforms/Coroutines.h"
 
 using namespace llvm;
 
@@ -123,7 +130,6 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLoopRotatePass(20));
 	PM.add(createLoopSimplifyCFGPass());
 	PM.add(createLoopStrengthReducePass());
-	PM.add(createSimpleLoopUnrollPass());
 	PM.add(createLoopUnswitchPass(true));
 	PM.add(createLoopVersioningLICMPass());
 	PM.add(createLowerAtomicPass());
@@ -132,7 +138,6 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createMemCpyOptPass());
 	PM.add(createMergedLoadStoreMotionPass());
 	PM.add(createNaryReassociatePass());
-	PM.add(createPartiallyInlineLibCallsPass());
 	//PM.add(createPlaceSafepointsPass());
 	PM.add(createReassociatePass());
 	PM.add(createDemoteRegisterToMemoryPass());
@@ -163,15 +168,52 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createInstructionSimplifierPass());
 	PM.add(createRewriteSymbolsPass());
 	PM.add(createUnifyFunctionExitNodesPass());
+
+	//Vectorize passes
+	//PM.add(createBBVectorizePass(NULL);
+	PM.add(createLoadStoreVectorizerPass());
+	PM.add(createSLPVectorizerPass());
+	
+	//ObjCARC passes
+	//PM.add(createObjCARCAPElimPass());
+	PM.add(createObjCARCContractPass());
+	PM.add(createObjCARCExpandPass());	
+	PM.add(createObjCARCOptPass());
+	//PM.add(createPAEvalPass());
+
 	//IPO passes
-
-
+	//PM.add(createAlwaysInlinerLegacyPass(true));
+	//PM.add(createArgumentPromotionPass(100));
+	//PM.add(createBarrierNoopPass());
+	//PM.add(createConstantMergePass());
+	//PM.add(createCrossDSOCFIPass());
+	//PM.add(createDeadArgEliminationPass());
 	//PM.add(createGlobalDCEPass());
+
+	//Instrumentation passes
+	//PM.add(createAddressSanitizerModulePass(true,true));
+	PM.add(createBoundsCheckingPass());
+	//PM.add(createPGOIndirectCallPromotionLegacyPass(true));
+	//PM.add(createMemorySanitizerPass(50));
+	//PM.add(createPGOInstrumentationGenLegacyPass());
+	//PM.add(createThreadSanitizerPass());
+
+	//InstCombine passes
+	PM.add(createInstructionCombiningPass(true));
+
+	//Coroutines passes
+	PM.add(createCoroCleanupPass());
+	PM.add(createCoroEarlyPass());
+	PM.add(createCoroElidePass());
+	//PM.add(createCoroSplitPass());
+	
   }
   if (AggressionLevel > 1) {
     PM.add(createLICMPass());
     PM.add(createGVNPass());
+    PM.add(createSimpleLoopUnrollPass());
     PM.add(createGVNHoistPass());
+    PM.add(createPartiallyInlineLibCallsPass());
   }
 }
 
