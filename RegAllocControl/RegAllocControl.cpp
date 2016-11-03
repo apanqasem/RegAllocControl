@@ -126,10 +126,14 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLoopInstSimplifyPass());
 	PM.add(createLoopInterchangePass());
 	PM.add(createLoopLoadEliminationPass());
-	PM.add(createLoopRerollPass());
+
+	//	PM.add(createLoopRerollPass());
+
 	PM.add(createLoopRotatePass(20));
 	PM.add(createLoopSimplifyCFGPass());
-	PM.add(createLoopStrengthReducePass());
+
+	//	PM.add(createLoopStrengthReducePass());
+
 	PM.add(createLoopUnswitchPass(true));
 	PM.add(createLoopVersioningLICMPass());
 	PM.add(createLowerAtomicPass());
@@ -137,10 +141,15 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLowerGuardIntrinsicPass());
 	PM.add(createMemCpyOptPass());
 	PM.add(createMergedLoadStoreMotionPass());
-	PM.add(createNaryReassociatePass());
+
+	//	PM.add(createNaryReassociatePass());
+
 	//PM.add(createPlaceSafepointsPass());
-	PM.add(createReassociatePass());
-	PM.add(createDemoteRegisterToMemoryPass());
+
+	//	PM.add(createReassociatePass());
+
+	//	PM.add(createDemoteRegisterToMemoryPass());
+
 	//PM.add(createRewriteStatepointsForGCPass());
 	PM.add(createScalarizerPass());
 	PM.add(createSCCPPass());
@@ -148,7 +157,9 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	//PM.add(createSimplificationPass(int, ste::func)); 			
 	PM.add(createSinkingPass());
 	PM.add(createSpeculativeExecutionPass());
-	PM.add(createSROAPass());
+
+	//	PM.add(createSROAPass());
+
 	PM.add(createStraightLineStrengthReducePass());
 	PM.add(createStructurizeCFGPass(false));
 	PM.add(createTailCallEliminationPass());
@@ -162,7 +173,9 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	PM.add(createLoopVersioningPass());
 	PM.add(createLowerInvokePass());
 	PM.add(createLowerSwitchPass());
-	PM.add(createPromoteMemoryToRegisterPass());
+
+	//	PM.add(createPromoteMemoryToRegisterPass());
+
 	//PM.add(createMetaRenamerPass());
 	//PM.add(createNameAnonGlobalPass());
 	PM.add(createInstructionSimplifierPass());
@@ -199,22 +212,36 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	//PM.add(createThreadSanitizerPass());
 
 	//InstCombine passes
-	PM.add(createInstructionCombiningPass(true));
+	//	PM.add(createInstructionCombiningPass(true));
 
 	//Coroutines passes
-	PM.add(createCoroCleanupPass());
-	PM.add(createCoroEarlyPass());
-	PM.add(createCoroElidePass());
+	//	PM.add(createCoroCleanupPass());
+	//	PM.add(createCoroEarlyPass());
+	//	PM.add(createCoroElidePass());
 	//PM.add(createCoroSplitPass());
 	
   }
-  if (AggressionLevel > 1) {
+  if (AggressionLevel < 0) {
+    PM.add(createInstructionCombiningPass(true));
+    PM.add(createLoopRerollPass());
+    PM.add(createDemoteRegisterToMemoryPass());
+
+  }
+  if (AggressionLevel > 0) {
     PM.add(createLICMPass());
     PM.add(createGVNPass());
     PM.add(createSimpleLoopUnrollPass());
     PM.add(createGVNHoistPass());
     PM.add(createPartiallyInlineLibCallsPass());
   }
+  if (AggressionLevel > 1) {
+    PM.add(createSROAPass());
+    PM.add(createNaryReassociatePass());
+    PM.add(createReassociatePass());
+    PM.add(createLoopStrengthReducePass());
+    PM.add(createPromoteMemoryToRegisterPass());
+  }
+
 }
 
 
