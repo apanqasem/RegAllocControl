@@ -100,8 +100,8 @@ static RegisterPass<RegAllocControlPass> X("reg_control", "Register Alloc Aggres
 static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 					legacy::PassManagerBase &PM) {
   PM.add(new RegAllocControlPass());
-  if (AggressionLevel > 0) 
-  {
+  //  if (AggressionLevel > 0) 
+  //  {
 	//Scalar passes 
 	PM.add(createAggressiveDCEPass());
 	PM.add(createAlignmentFromAssumptionsPass());
@@ -220,7 +220,7 @@ static void registerRegAllocControlPass(const PassManagerBuilder &Builder,
 	//	PM.add(createCoroElidePass());
 	//PM.add(createCoroSplitPass());
 	
-  }
+	//  }
   if (AggressionLevel < 0) {
     PM.add(createInstructionCombiningPass(true));
     PM.add(createLoopRerollPass());
